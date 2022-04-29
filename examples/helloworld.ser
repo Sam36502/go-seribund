@@ -1,0 +1,36 @@
+; Seribund Hello-World
+;
+; Registers are ordered alphabetically
+; and their ASCII values are printed
+; upon program termination
+
+(zz+1)
+(a00+72)  ; 'H'
+(zz+0)
+(a01+101)  ; 'e'
+(zz+0)
+(a02+108)  ; 'l'
+(zz+0)
+(a03+108)  ; 'l'
+(zz+0)
+(a04+111)  ; 'o'
+(zz+0)
+(a05+44)   ; ','
+(zz+0)
+(a06+32)   ; ' '
+(zz+0)
+(a07+119)  ; 'W'
+(zz+0)
+(a08+111)  ; 'o'
+(zz+0)
+(a09+114)  ; 'r'
+(zz+0)
+(a10+108) ; 'l'
+(zz+0)
+(a11+100) ; 'd'
+(zz+0)
+(a12+33)  ; '!'
+(zz+0)
+(a13+10)  ; '\n'
+
+(zz-2)   ; Terminate Program

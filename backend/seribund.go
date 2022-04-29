@@ -11,6 +11,14 @@
 
 package backend
 
+import (
+	"fmt"
+	"sort"
+	"strings"
+
+	"github.com/Sam36502/go-seribund/config"
+)
+
 type Operation int64
 
 const (
@@ -45,6 +53,7 @@ func RunProgram(prog Program) map[string]int64 {
 
 	pp := 0        // Program Pointer
 	pv := int64(1) // Previous Value
+	runs := 0
 	for pv > -1 {
 		ins := prog[pp]
 
@@ -54,16 +63,41 @@ func RunProgram(prog Program) map[string]int64 {
 			if ins.Value.isReg() {
 				valVal = Registers[ins.Value.Reg]
 			}
-			pv = ins.Operation.Perform(regVal, valVal)
-			Registers[ins.Register] = pv
+			Registers[ins.Register] = ins.Operation.Perform(regVal, valVal)
 		}
+		pv = Registers[ins.Register]
 
 		pp++
 		if pp >= len(prog) {
 			pp = 0
 		}
+
+		runs++
+		if runs >= config.RUNS_LIMIT {
+			fmt.Println("Reached run limit; Exiting...")
+			break
+		}
 	}
 
 	return Registers
 
+}
+
+// Orders registers alphabetically and puts their
+// ASCII rune into a string. Also ignores negative values
+func StringifyRegisters(regs map[string]int64) string {
+	index := make([]string, 0)
+	for reg, _ := range regs {
+		index = append(index, reg)
+	}
+	sort.Strings(index)
+
+	var out strings.Builder
+	for _, reg := range index {
+		if regs[reg] < 0 {
+			continue
+		}
+		out.WriteRune(rune(regs[reg]))
+	}
+	return out.String()
 }

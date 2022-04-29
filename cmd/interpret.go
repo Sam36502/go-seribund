@@ -18,12 +18,10 @@ package cmd
 import (
 	"fmt"
 	"io/ioutil"
-	"strconv"
 
 	"github.com/spf13/cobra"
 
 	"github.com/Sam36502/go-seribund/backend"
-	"github.com/Sam36502/go-seribund/config"
 )
 
 // interpretCmd represents the interpret command
@@ -47,11 +45,7 @@ to quickly create a Cobra application.`,
 
 		prog := backend.ParseProgram(string(prgData))
 		result := backend.RunProgram(prog)
-
-		fmt.Println("Final Result:")
-		for k, v := range result {
-			fmt.Println("[" + k + "]: " + strconv.FormatInt(v, config.VALUE_BASE))
-		}
+		fmt.Print(backend.StringifyRegisters(result))
 
 	},
 }

@@ -9,5 +9,6 @@ const (
 	ADD_RUNE     = '+'
 	SUB_RUNE     = '-'
 	VALUE_BASE   = 10
-	REGEX_REG    = "[a-z][a-z0-9]*"
+	REGEX_REG    = "^[a-z][a-z0-9]*$"
+	RUNS_LIMIT   = 1000
 )

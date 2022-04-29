@@ -15,6 +15,11 @@ func ParseProgram(program string) Program {
 
 	parsed := make(Program, 0)
 	problems := make([]string, 0)
+	regRegex, err := regexp.Compile(config.REGEX_REG)
+	if err != nil {
+		fmt.Println("[ERROR] Failed to compile RegEx '" + config.REGEX_REG + "'.")
+		os.Exit(1)
+	}
 	for li, line := range lines {
 
 		if len(line) == 0 {
@@ -39,17 +44,18 @@ func ParseProgram(program string) Program {
 		}
 		inner = strings.TrimSpace(inner[startParen+1 : endParen])
 		if len(inner) == 0 {
+			problems = append(problems, SyntaxError(li, "Empty Instruction", line))
 			continue
 		}
 
 		// Parse Operation
 		var ins Instruction
 		opi := strings.IndexRune(inner, config.ADD_RUNE)
-		if opi > 0 {
+		if opi > -1 {
 			ins.Operation = OP_ADD
 		} else {
 			opi = strings.IndexRune(inner, config.SUB_RUNE)
-			if opi > 0 {
+			if opi > -1 {
 				if ins.Operation != 0 {
 					problems = append(problems, SyntaxError(li, "Too many Operators", line))
 					continue
@@ -67,11 +73,7 @@ func ParseProgram(program string) Program {
 			problems = append(problems, SyntaxError(li, "Missing Register", line))
 			continue
 		}
-		isReg, err := regexp.MatchString(config.REGEX_REG, ins.Register)
-		if err != nil {
-			fmt.Println("[ERROR] Failed to match regex")
-			os.Exit(1)
-		}
+		isReg := regRegex.MatchString(ins.Register)
 		if !isReg {
 			problems = append(problems, SyntaxError(li, "Invalid Register", line))
 		}
@@ -82,11 +84,7 @@ func ParseProgram(program string) Program {
 			problems = append(problems, SyntaxError(li, "Missing Value", line))
 			continue
 		}
-		isReg, err = regexp.MatchString(config.REGEX_REG, val)
-		if err != nil {
-			fmt.Println("[ERROR] Failed to match regex")
-			os.Exit(1)
-		}
+		isReg = regRegex.MatchString(val)
 		if isReg {
 			ins.Value.Reg = val
 			ins.Value.Num = -1
