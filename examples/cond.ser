@@ -1,0 +1,54 @@
+; Attempts to demonstrate a simple if/else construction
+
+
+(one+1)  ; Define '1' constant
+(zero+0) ; Define '0' constant
+(one+0)
+
+; Set condition
+;  0 = False
+;  1 = True
+(a+0)
+(one+0)
+
+; if a == 1
+; prints 'true'
+(a+0)
+(a1+116)
+(a+0)
+(a2+114)
+(a+0)
+(a3+117)
+(a+0)
+(a4+101)
+(a+0)
+(a5+10)
+(one+0)
+
+; else (inverts a into q)
+(a+0)
+(zero+0)
+(q+1)
+
+; if q == 1
+; prints 'false'
+(q+0)
+(a0+102)
+(q+0)
+(a1+97)
+(q+0)
+(a2+108)
+(q+0)
+(a3+115)
+(q+0)
+(a4+101)
+(q+0)
+(a5+10)
+(one+0)
+
+; zero out regs and terminate 
+(a-a)
+(one+0)
+(q-q)
+(one+0)
+(one-2)

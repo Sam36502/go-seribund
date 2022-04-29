@@ -1,0 +1,65 @@
+; A simple demonstration of an AND-Gate
+
+
+(one+1)  ; Define '1' constant
+(zero+0) ; Define '0' constant
+(one+0)
+
+; Set Inputs:
+;  0 = False
+;  1 = True
+(a+1)   ; A
+(one+0)
+
+(b+0)   ; B
+(one+0)
+
+
+
+; AND-Gate:
+; (Bear in mind, q must be zero here)
+(a+0)
+(q+b)
+(one+1)
+
+
+
+; Prints 'true' or 'false' depending on Q
+(q+0)
+(a0+116)
+(q+0)
+(a1+114)
+(q+0)
+(a2+117)
+(q+0)
+(a3+101)
+(q+0)
+(a4+10)
+(one+0)
+
+(q+0)
+(zero+0)
+(a0+102)
+(q+0)
+(zero+0)
+(a1+97)
+(q+0)
+(zero+0)
+(a2+108)
+(q+0)
+(zero+0)
+(a3+115)
+(q+0)
+(zero+0)
+(a4+101)
+(q+0)
+(zero+0)
+(a5+10)
+(one+0)
+
+; zero out regs and terminate 
+(a-a)
+(one+0)
+(q-q)
+(one+0)
+(one-2)

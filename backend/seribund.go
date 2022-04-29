@@ -58,14 +58,23 @@ func RunProgram(prog Program) map[string]int64 {
 		ins := prog[pp]
 
 		for i := 0; int64(i) < pv; i++ {
-			regVal := Registers[ins.Register]
+			regVal, exists := Registers[ins.Register]
+			if !exists {
+				regVal = 0
+				Registers[ins.Register] = regVal
+			}
 			valVal := ins.Value.Num
 			if ins.Value.isReg() {
 				valVal = Registers[ins.Value.Reg]
 			}
+
 			Registers[ins.Register] = ins.Operation.Perform(regVal, valVal)
 		}
-		pv = Registers[ins.Register]
+		if pv == 0 {
+			pv = 1
+		} else {
+			pv = Registers[ins.Register]
+		}
 
 		pp++
 		if pp >= len(prog) {
@@ -87,7 +96,7 @@ func RunProgram(prog Program) map[string]int64 {
 // ASCII rune into a string. Also ignores negative values
 func StringifyRegisters(regs map[string]int64) string {
 	index := make([]string, 0)
-	for reg, _ := range regs {
+	for reg := range regs {
 		index = append(index, reg)
 	}
 	sort.Strings(index)

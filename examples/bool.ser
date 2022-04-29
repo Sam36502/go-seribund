@@ -1,0 +1,42 @@
+;
+; Some handy boolean constructions
+;
+
+; Useful constants for resetting the previous result
+(one+1)
+(zero+0)
+(one+0) ; NOP to be skipped by zero constant
+
+
+; NOP - Does nothing/Resets previous result to 1
+; Handy for executing something once
+(one+0)
+
+
+; Simple one-line conditionals
+; IF
+(a+0)
+; this line only executed if a==1 (or more times if a>1)
+
+; ELSE
+(a+0)
+(zero+0)
+; this line only executed if a==0
+
+
+; NOT - Invert A
+(a-a)   ; Zero-out variables
+(one+0)
+(q-q)
+(one+0)
+(q+1)
+(a+0)
+(q-1)   ; Sets q to 0 if a == 1
+(one+0)
+
+
+; A OR B = Q
+(q-q)   ; Zero-out q
+(one+0)
+
+
