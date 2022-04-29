@@ -1,0 +1,16 @@
+
+; Empty lines --> fine
+
+; Lines with only comments --> fine
+
+() ; parens with no content --> err
+
+(reg+1 ; unmatched parens --> err
+
+(+2) ; missing register --> err
+
+(1reg + 10) ; invalid register name --> err
+
+(reg-reg) ; register value --> fine
+
+    (    reg     -     319       )      ;    many spaces --> fine
