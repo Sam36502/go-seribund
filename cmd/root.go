@@ -17,28 +17,44 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 
+	"github.com/Sam36502/go-seribund/backend"
+	"github.com/Sam36502/go-seribund/config"
 	"github.com/spf13/cobra"
-
-	homedir "github.com/mitchellh/go-homedir"
-	"github.com/spf13/viper"
 )
-
-var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "seribund",
-	Short: "A go interpreter and transpiler for Seribund",
-	Long: `A Seribund interpreter and transpiler written in go
-  that can interpret program while showing off the memory.
-  
-  It also supports transpiling to various languages to be
-  compiled into an executable.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
+	Use:   "seribund <program-file>",
+	Short: "Parses and interprets a seribund file",
+	Long: `Parses and interprets a seribund file, then
+		prints out all registers as ASCII characters
+		sorted alphabetically.`,
+	Args: cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			fmt.Print("Input filename required")
+			cmd.Help()
+			return
+		}
+		prgData, err := ioutil.ReadFile(args[0])
+		if err != nil {
+			cmd.Help()
+			return
+		}
+
+		prog := backend.ParseProgram(string(prgData))
+		result := backend.RunProgram(prog, cmd.Flag(config.FL_STEP).Changed)
+
+		if cmd.Flag(config.FL_VALUES).Changed {
+			fmt.Print(backend.RegistersValues(result))
+		} else {
+			fmt.Print(backend.RegistersASCII(result))
+		}
+
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -51,41 +67,6 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
-
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/seribund.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-}
-
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := homedir.Dir()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		// Search config in home directory with name ".seribund" (without extension).
-		viper.AddConfigPath(home + ".config/")
-		viper.SetConfigName("seribund")
-	}
-
-	viper.AutomaticEnv() // read in environment variables that match
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
-	}
+	rootCmd.PersistentFlags().BoolP(config.FL_VALUES, config.FLS_VALUES, false, "Makes the interpreter list out the values of all registers, instead of their ASCII characters.")
+	rootCmd.PersistentFlags().BoolP(config.FL_STEP, config.FLS_STEP, false, "Shows the state of memory while running and prompts the user before continuing.")
 }
