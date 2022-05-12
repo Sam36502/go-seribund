@@ -12,7 +12,9 @@
 package backend
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"sort"
 	"strings"
 
@@ -47,7 +49,7 @@ type Instruction struct {
 
 type Program []Instruction
 
-func RunProgram(prog Program) map[string]int64 {
+func RunProgram(prog Program, step bool) map[string]int64 {
 
 	Registers := make(map[string]int64)
 
@@ -81,6 +83,15 @@ func RunProgram(prog Program) map[string]int64 {
 			pp = 0
 		}
 
+		if step {
+			fmt.Print(RegistersValues(Registers))
+			fmt.Printf("Last Calculation Result: %d\n\n", pv)
+			bufio.NewReader(os.Stdin).ReadBytes('\n')
+			if pv < 0 {
+				fmt.Print("Negative Previous Value; Exiting...\n\n")
+			}
+		}
+
 		runs++
 		if runs >= config.RUNS_LIMIT {
 			fmt.Println("Reached run limit; Exiting...")
@@ -94,7 +105,7 @@ func RunProgram(prog Program) map[string]int64 {
 
 // Orders registers alphabetically and puts their
 // ASCII rune into a string. Also ignores negative values
-func StringifyRegisters(regs map[string]int64) string {
+func RegistersASCII(regs map[string]int64) string {
 	index := make([]string, 0)
 	for reg := range regs {
 		index = append(index, reg)
@@ -107,6 +118,22 @@ func StringifyRegisters(regs map[string]int64) string {
 			continue
 		}
 		out.WriteRune(rune(regs[reg]))
+	}
+	return out.String()
+}
+
+// Prints all registers with their values
+func RegistersValues(regs map[string]int64) string {
+	index := make([]string, 0)
+	for reg := range regs {
+		index = append(index, reg)
+	}
+	sort.Strings(index)
+
+	var out strings.Builder
+	out.WriteString("All Registers:\n")
+	for _, reg := range index {
+		out.WriteString(fmt.Sprintf("  %10s: %-d\n", reg, regs[reg]))
 	}
 	return out.String()
 }

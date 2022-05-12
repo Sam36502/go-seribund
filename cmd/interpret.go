@@ -22,18 +22,15 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/Sam36502/go-seribund/backend"
+	"github.com/Sam36502/go-seribund/config"
 )
 
 // interpretCmd represents the interpret command
 var interpretCmd = &cobra.Command{
 	Use:   "interpret",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Parses and interprets a seribund file",
+	Long: `Parses and interprets a seribund file with
+		various options for debugging along the way.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			return
@@ -44,8 +41,13 @@ to quickly create a Cobra application.`,
 		}
 
 		prog := backend.ParseProgram(string(prgData))
-		result := backend.RunProgram(prog)
-		fmt.Print(backend.StringifyRegisters(result))
+		result := backend.RunProgram(prog, cmd.Flag(config.FL_STEP).Changed)
+
+		if cmd.Flag(config.FL_VALUES).Changed {
+			fmt.Print(backend.RegistersValues(result))
+		} else {
+			fmt.Print(backend.RegistersASCII(result))
+		}
 
 	},
 }
@@ -54,6 +56,8 @@ func init() {
 	rootCmd.AddCommand(interpretCmd)
 
 	// Here you will define your flags and configuration settings.
+	interpretCmd.PersistentFlags().BoolP(config.FL_VALUES, config.FLS_VALUES, false, "Makes the interpreter list out the values of all registers, instead of their ASCII characters.")
+	interpretCmd.PersistentFlags().BoolP(config.FL_STEP, config.FLS_STEP, false, "Shows the state of memory while running and prompts the user before continuing.")
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:

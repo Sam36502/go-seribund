@@ -12,3 +12,11 @@ const (
 	REGEX_REG    = "^[a-z][a-z0-9]*$"
 	RUNS_LIMIT   = 1000
 )
+
+// Command Flags
+const (
+	FL_VALUES  = "values"
+	FLS_VALUES = "v" // Shorthand
+	FL_STEP    = "step"
+	FLS_STEP   = "s" // Shorthand
+)
